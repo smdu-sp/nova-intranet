@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -22,5 +23,221 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+}
+
+/* Estilos do site antigo */
+:root {
+  --color-text-text-botao: #fff;
+}
+
+/* Grid Container */
+.grid-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.grid-parent {
+  width: 100%;
+}
+
+/* Header */
+.site-header .header-image {
+  margin-top: 0;
+}
+
+/* Botões */
+.button-home1 {
+  text-decoration: none;
+  color: var(--color-text-text-botao);
+  background: #0A3399;
+  padding: 15px 50px;
+  border-radius: 7px;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  font-family: sans-serif;
+  display: inline-block;
+  margin-bottom: 30px;
+}
+
+.button-home {
+  text-decoration: none;
+  color: white;
+  background: #0A3399;
+  padding: 15px 50px;
+  border-radius: 7px;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  font-family: sans-serif;
+}
+
+.button-home:hover,
+.button-home1:hover {
+  color: #fff;
+  background-color: #34529e;
+  transition: 200ms;
+}
+
+.button-home1:hover {
+  transition: 300ms;
+}
+
+/* Layout */
+.site-content {
+  display: flex;
+  min-width: 900px;
+  max-width: 1200px;
+}
+
+#page {
+  max-width: 1200px;
+}
+
+#primary {
+  min-width: 900px;
+  padding: 0%;
+}
+
+#main {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+/* Títulos */
+.sub-title-home,
+.title-interna {
+  color: #395AAD;
+  border-bottom: 6px solid #395AAD;
+  display: inline-block;
+  font-size: 2.0rem;
+  font-weight: 700;
+  padding-bottom: 5px;
+  margin-bottom: 0;
+}
+
+.sub-title {
+  font-size: 1.6rem;
+  color: #000;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.text {
+  font-size: 1.4rem;
+  color: #000;
+  font-weight: 400;
+}
+
+/* Artigos */
+.article {
+  background: rgb(246, 246, 246);
+  margin: 20px 0;
+  padding: 20px;
+  height: 100%;
+  transition: rgb(246, 246, 246, 0.3) 100ms;
+}
+
+.article:hover {
+  background: rgb(235, 235, 235);
+  transition: 300ms;
+}
+
+/* Barra de Acessibilidade */
+.container-acess-geral {
+  background-color: rgb(73, 73, 73);
+  border-bottom: 1px solid rgb(0, 0, 0);
+  display: flex;
+  font-family: Roboto;
+  font-size: 16.8px;
+  font-weight: 400;
+  height: 32.6719px;
+  justify-content: center;
+  line-height: 20.16px;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  text-size-adjust: 100%;
+  text-transform: none;
+  unicode-bidi: isolate;
+  width: 100%;
+  z-index: 1;
+}
+
+.container-controle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.controle-esquerda {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 20px;
+}
+
+.controle-direita {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 15px;
+  align-items: center;
+}
+
+.funcoes-controle {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.funcoes-controle:hover {
+  text-decoration: underline;
+}
+
+.funcoes-controle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.text-header {
+  color: white;
+}
+
+/* Imagens */
+.mediun-img img {
+  width: 200px;
+}
+
+.img-conteudo {
+  height: 165px;
+  min-width: 270px;
+  max-width: 270px;
+  display: flex;
+}
+
+.img-galeria {
+  display: flex;
+  justify-content: center;
+  height: 165px;
+}
+
+.img-comunicados {
+  height: 330px;
 }
