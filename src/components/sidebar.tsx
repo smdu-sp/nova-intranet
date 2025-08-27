@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import BirthdayWidget from "./birthday-widget";
+import SupportWidget from "./support-widget";
 
 export default function Sidebar() {
   const systemLinks = [
@@ -21,17 +22,7 @@ export default function Sidebar() {
   return (
     <div className="space-y-6">
       {/* Suporte Técnico */}
-      <div className="bg-[#0a3299] rounded-lg p-6 text-white">
-        <h2 className="text-xl font-bold mb-4">SUPORTE TÉCNICO</h2>
-        <p className="text-sm mb-4">Identifique sua máquina:</p>
-        <div className="bg-[#395aad] rounded p-3 mb-4 text-center">
-          <div className="font-bold text-lg">SMULWK005</div>
-          <div className="text-sm">10.75.33.9</div>
-        </div>
-        <Button className="w-full bg-[#f94668] hover:bg-[#eb3c00] text-white">
-          ABRIR CHAMADO
-        </Button>
-      </div>
+      <SupportWidget />
 
       {/* Sistemas */}
       <div className="bg-white rounded-lg p-6 shadow-sm">
