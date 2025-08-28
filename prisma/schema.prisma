@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+// ===== MODEL CMS PAGES =====
+model CMSPage {
+    id           Int      @id @default(autoincrement())
+    title        String   @db.VarChar(255)
+    slug         String   @unique @db.VarChar(255)
+    content      String   @db.LongText
+    is_published Boolean  @default(false)
+    created_at   DateTime @default(now())
+    updated_at   DateTime @updatedAt
+
+    @@map("cms_pages")
+}
+
+// ===== MODEL NAVIGATION MENUS =====
+model NavigationMenu {
+    id         Int      @id @default(autoincrement())
+    name       String   @db.VarChar(100)
+    location   String   @db.VarChar(50) // header, footer, sidebar
+    is_active  Boolean  @default(true)
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    // Relacionamentos
+    menuItems MenuItem[]
+
+    @@index([location])
+    @@index([is_active])
+    @@map("navigation_menus")
+}
+
+// ===== MODEL MENU ITEMS (4 níveis hierárquicos) =====
+model MenuItem {
+    id             Int      @id @default(autoincrement())
+    menu_id        Int
+    parent_id      Int?
+    level          Int      @default(1) // 1=principal, 2=submenu, 3=sub-submenu, 4=sub-sub-submenu
+    title          String   @db.VarChar(100)
+    url            String   @db.VarChar(255)
+    target         String   @default("_self") @db.VarChar(20)
+    order_position Int      @default(0)
+    is_active      Boolean  @default(true)
+    has_children   Boolean  @default(false)
+    created_at     DateTime @default(now())
+    updated_at     DateTime @updatedAt
+
+    // Relacionamentos
+    menu     NavigationMenu @relation(fields: [menu_id], references: [id], onDelete: Cascade)
+    parent   MenuItem?      @relation("MenuItemHierarchy", fields: [parent_id], references: [id], onDelete: SetNull)
+    children MenuItem[]     @relation("MenuItemHierarchy")
+
+    @@index([menu_id])
+    @@index([parent_id])
+    @@index([level])
+    @@index([order_position])
+    @@index([is_active])
+    @@map("menu_items")
+}
+
+// ===== MODEL BLOG POSTS =====
+model BlogPost {
+    id               Int        @id @default(autoincrement())
+    title            String     @db.VarChar(255)
+    slug             String     @unique @db.VarChar(255)
+    excerpt          String?    @db.Text
+    content          String     @db.LongText
+    featured_image   String?    @db.VarChar(255)
+    author           String     @default("admin") @db.VarChar(100)
+    status           PostStatus @default(draft)
+    published_at     DateTime?
+    created_at       DateTime   @default(now())
+    updated_at       DateTime   @updatedAt
+    meta_title       String?    @db.VarChar(255)
+    meta_description String?    @db.Text
+    tags             Json? // Array de tags em formato JSON
+
+    @@index([slug])
+    @@index([status])
+    @@index([published_at])
+    @@index([author])
+    @@map("blog_posts")
+}
+
+// ===== ENUMS =====
+enum PostStatus {
+    draft
+    published
+    archived
+}

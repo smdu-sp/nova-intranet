@@ -1,15 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import AccessibilityBar from "./accessibility-bar";
-
-const navItems = [
-  "SMUL",
-  "SERVIDORES",
-  "SOLICITAÇÕES",
-  "CONTATOS",
-  "MANUAIS",
-  "LINKS",
-];
+import Navigation from "./navigation";
 
 export default function Header() {
   return (
@@ -38,18 +30,7 @@ export default function Header() {
           <nav className="flex justify-center">
             <div className="w-[1491px] bg-[#e5e5e5]">
               <div className="flex justify-around">
-                {navItems.map((item) => {
-                  const href = item === "CONTATOS" ? "/contatos" : "#";
-                  return (
-                    <Link
-                      key={item}
-                      href={href}
-                      className="py-4 px-2 text-[#333333] font-semibold hover:text-[#0a3299] border-b-2 border-transparent hover:border-[#0a3299] transition-colors"
-                    >
-                      {item}
-                    </Link>
-                  );
-                })}
+                <Navigation />
               </div>
             </div>
           </nav>

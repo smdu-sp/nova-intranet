@@ -125,7 +125,9 @@ export default function ContatosPage() {
               </Link>
             </div>
           </div>
-          <Navigation />
+          <div className="flex justify-around">
+              <Navigation />
+          </div>
         </div>
       </header>
 

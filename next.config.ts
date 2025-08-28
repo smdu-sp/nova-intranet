@@ -1,12 +1,20 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  env: {
-    DB_HOST: process.env.DB_HOST,
-    DB_NAME: process.env.DB_NAME,
-    DB_USER: process.env.DB_USER,
-    DB_PASSWORD: process.env.DB_PASSWORD,
-    DB_PORT: process.env.DB_PORT,
+  // Configurações para resolver problemas de SSR com TipTap
+  experimental: {
+    // Configurações compatíveis com Turbopack
+    serverComponentsExternalPackages: ["@tiptap/react", "@tiptap/starter-kit"],
+  },
+  // Configurações de webpack para TipTap (apenas quando não usar Turbopack)
+  webpack: (config, { isServer, dev }) => {
+    if (!isServer && !dev) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    return config;
   },
 };
 

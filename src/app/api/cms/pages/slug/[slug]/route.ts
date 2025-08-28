@@ -1,0 +1,43 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getPageBySlug } from "@/lib/prisma-cms";
+import { extractRouteParam } from "@/lib/nextjs-15-utils";
+
+interface RouteParams {
+  params: {
+    slug: string;
+  };
+}
+
+// GET - Buscar página por slug
+export async function GET(request: NextRequest, { params }: RouteParams) {
+  try {
+    const slug = await extractRouteParam(params, "slug");
+
+    const page = await getPageBySlug(slug);
+
+    if (!page) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Página não encontrada",
+        },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: page,
+    });
+  } catch (error) {
+    console.error("❌ Erro ao buscar página por slug:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Erro interno do servidor",
+      },
+      { status: 500 }
+    );
+  }
+}

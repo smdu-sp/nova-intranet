@@ -122,13 +122,57 @@ export default function MainContent() {
             className="w-full object-cover"
           />
           <div className="absolute inset-0  flex items-center">
-            <h3 className="text-white text-4xl font-bold ml-8">              
-            </h3>
+            <h3 className="text-white text-4xl font-bold ml-8"></h3>
           </div>
         </div>
         <Button className="bg-[#0a3299] hover:bg-[#395aad] text-white px-6 py-2 text-sm">
           VER MAIS
         </Button>
+      </section>
+
+      {/* Sistema de Administração */}
+      <section className="bg-white rounded-lg p-6 shadow-sm">
+        <h2 className="text-xl font-bold text-[#0a3299] mb-4 border-b-2 border-[#0a3299] pb-2">
+          Sistema de Administração
+        </h2>
+        <div className="space-y-4">
+          <h3 className="font-bold text-[#333333]">
+            Painel Completo de Gerenciamento
+          </h3>
+          <p className="text-[#666666] text-sm leading-relaxed">
+            Acesse o dashboard completo para gerenciar páginas, posts, menus e
+            todo o conteúdo da intranet.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Button
+              className="bg-[#0a3299] hover:bg-[#395aad] text-white px-4 py-2 text-sm w-full"
+              onClick={() => window.open("/admin/dashboard", "_blank")}
+            >
+              🚀 DASHBOARD ADMIN
+            </Button>
+            <Button
+              variant="outline"
+              className="text-[#0a3299] border-[#0a3299] hover:bg-[#0a3299] hover:text-white px-4 py-2 text-sm w-full"
+              onClick={() => window.open("/admin/cms", "_blank")}
+            >
+              📄 GERENCIAR PÁGINAS
+            </Button>
+            <Button
+              variant="outline"
+              className="text-[#0a3299] border-[#0a3299] hover:bg-[#0a3299] hover:text-white px-4 py-2 text-sm w-full"
+              onClick={() => window.open("/admin/posts", "_blank")}
+            >
+              ✍️ GERENCIAR POSTS
+            </Button>
+            <Button
+              variant="outline"
+              className="text-[#0a3299] border-[#0a3299] hover:bg-[#0a3299] hover:text-white px-4 py-2 text-sm w-full"
+              onClick={() => window.open("/admin/menus", "_blank")}
+            >
+              🧭 GERENCIAR MENUS
+            </Button>
+          </div>
+        </div>
       </section>
     </div>
   );
