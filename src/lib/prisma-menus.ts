@@ -207,6 +207,31 @@ export async function getMenuItemsByMenuId(
   }
 }
 
+export async function reorderMenuItems(
+  menuId: number,
+  itemIds: number[]
+): Promise<boolean> {
+  try {
+    // Update order_position for all items in the new order
+    for (let i = 0; i < itemIds.length; i++) {
+      await prisma.menuItem.update({
+        where: {
+          id: itemIds[i],
+          menu_id: menuId,
+        },
+        data: {
+          order_position: i + 1,
+          updated_at: new Date(),
+        },
+      });
+    }
+    return true;
+  } catch (error) {
+    console.error("Error reordering menu items:", error);
+    return false;
+  }
+}
+
 // Função de teste para debug
 export async function debugMenuItems(menuId: number): Promise<any> {
   try {
