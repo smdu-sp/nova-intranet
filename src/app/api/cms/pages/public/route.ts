@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPublishedPages } from "@/lib/prisma-cms";
+import { getPublishedPages } from "@/lib/cms";
 
 // GET - Listar páginas publicadas
 export async function GET() {

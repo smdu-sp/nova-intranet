@@ -12,15 +12,42 @@ datasource db {
 
 // ===== MODEL CMS PAGES =====
 model CMSPage {
-    id           Int      @id @default(autoincrement())
-    title        String   @db.VarChar(255)
-    slug         String   @unique @db.VarChar(255)
-    content      String   @db.LongText
-    is_published Boolean  @default(false)
-    created_at   DateTime @default(now())
-    updated_at   DateTime @updatedAt
+    id               Int      @id @default(autoincrement())
+    title            String   @db.VarChar(255)
+    slug             String   @unique @db.VarChar(255)
+    content          String   @db.LongText
+    featured_image   String?  @db.VarChar(500) // Imagem principal/destacada
+    meta_description String?  @db.Text // Descrição para SEO
+    is_published     Boolean  @default(false)
+    created_by       String   @default("admin") @db.VarChar(100) // Quem criou a página
+    created_at       DateTime @default(now())
+    updated_at       DateTime @updatedAt
 
+    // Relacionamentos
+    images CMSPageImage[]
+
+    @@index([created_by])
     @@map("cms_pages")
+}
+
+// ===== MODEL CMS PAGE IMAGES =====
+model CMSPageImage {
+    id             Int      @id @default(autoincrement())
+    page_id        Int
+    image_url      String   @db.VarChar(500)
+    alt_text       String?  @db.VarChar(255)
+    caption        String?  @db.Text
+    order_position Int      @default(0)
+    is_featured    Boolean  @default(false)
+    created_at     DateTime @default(now())
+    updated_at     DateTime @updatedAt
+
+    // Relacionamentos
+    page CMSPage @relation(fields: [page_id], references: [id], onDelete: Cascade)
+
+    @@index([page_id])
+    @@index([order_position])
+    @@map("cms_page_images")
 }
 
 // ===== MODEL NAVIGATION MENUS =====

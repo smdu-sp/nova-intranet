@@ -1,15 +1,18 @@
 import { getPageBySlug } from "@/lib/cms";
 import { notFound } from "next/navigation";
 import { extractRouteParam } from "@/lib/nextjs-15-utils";
+import Link from "next/link";
+import Image from "next/image";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default async function CMSPage({ params }: PageProps) {
-  const slug = await extractRouteParam(params, "slug");
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
   const page = await getPageBySlug(slug);
 
   if (!page) {
@@ -20,9 +23,9 @@ export default async function CMSPage({ params }: PageProps) {
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-500 mb-6">
-        <a href="/" className="hover:text-[#0a3299]">
+        <Link href="/" className="hover:text-[#0a3299]">
           Início
-        </a>
+        </Link>
         <span className="mx-2">/</span>
         <span>{page.title}</span>
       </nav>
@@ -50,6 +53,39 @@ export default async function CMSPage({ params }: PageProps) {
           </div>
         </header>
 
+        {/* Imagens da página */}
+        {page.images && page.images.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold text-[#0a3299] mb-4">
+              Galeria de Imagens
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {page.images.map((image, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="relative aspect-video rounded-lg overflow-hidden border border-gray-200">
+                    <Image
+                      src={image.image_url}
+                      alt={image.alt_text || `Imagem ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                    {image.is_featured && (
+                      <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+                        ★ Destaque
+                      </div>
+                    )}
+                  </div>
+                  {image.caption && (
+                    <p className="text-sm text-gray-600 text-center">
+                      {image.caption}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Conteúdo HTML */}
         <div
           className="prose prose-lg max-w-none"
@@ -62,7 +98,8 @@ export default async function CMSPage({ params }: PageProps) {
 
 // Gerar metadados dinâmicos para SEO
 export async function generateMetadata({ params }: PageProps) {
-  const slug = await extractRouteParam(params, "slug");
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
   const page = await getPageBySlug(slug);
 
   if (!page) {

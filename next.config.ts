@@ -4,9 +4,9 @@ const nextConfig: NextConfig = {
   // Configurações para resolver problemas de SSR com TipTap
   experimental: {
     // Configurações compatíveis com Turbopack
-    serverComponentsExternalPackages: ["@tiptap/react", "@tiptap/starter-kit"],
+    optimizePackageImports: ["@next/font"],
   },
-  // Configurações de webpack para TipTap (apenas quando não usar Turbopack)
+  // Configurações para TipTap (apenas quando não usar Turbopack)
   webpack: (config, { isServer, dev }) => {
     if (!isServer && !dev) {
       config.resolve.fallback = {
@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
       };
     }
     return config;
+  },
+  // Configurações para fontes
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+  // Configurações para Turbopack
+  turbopack: {
+    root: process.cwd(),
   },
 };
 

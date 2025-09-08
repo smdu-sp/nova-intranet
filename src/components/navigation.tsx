@@ -27,7 +27,6 @@ export default function Navigation() {
       ]);
 
       const pagesResult = await pagesRes.json();
-
       const menuResult = await menuRes.json();
 
       console.log(menuResult);
@@ -46,10 +45,21 @@ export default function Navigation() {
     }
   };
 
+  // Função para determinar se o link deve abrir no main content
+  const getMenuLink = (item: MenuItemWithChildren) => {
+    // Se for uma página CMS (começa com /pagina/), converte para abrir no main content
+    if (item.url.startsWith("/pagina/")) {
+      const slug = item.url.replace("/pagina/", "");
+      return `/?page=${slug}`;
+    }
+    // Para outros links (externos, sistemas), mantém o comportamento normal
+    return item.url;
+  };
+
   const renderMenuItem = (item: MenuItemWithChildren) => (
     <div key={item.id} className="relative group min-w-[120px] text-center">
       <Link
-        href={item.url}
+        href={getMenuLink(item)}
         className="py-4 px-2 text-[#333333] font-semibold hover:text-[#0a3299] border-b-2 border-transparent hover:border-[#0a3299] transition-colors block"
       >
         {item.title}
@@ -61,7 +71,7 @@ export default function Navigation() {
           {item.children?.map((child: MenuItemWithChildren) => (
             <div key={child.id} className="relative group/child">
               <Link
-                href={child.url}
+                href={getMenuLink(child)}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#0a3299]"
               >
                 {child.title}
@@ -78,7 +88,7 @@ export default function Navigation() {
                         className="relative group/grandchild"
                       >
                         <Link
-                          href={grandChild.url}
+                          href={getMenuLink(grandChild)}
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#0a3299]"
                         >
                           {grandChild.title}
@@ -93,7 +103,7 @@ export default function Navigation() {
                                 (greatGrandChild: MenuItemWithChildren) => (
                                   <Link
                                     key={greatGrandChild.id}
-                                    href={greatGrandChild.url}
+                                    href={getMenuLink(greatGrandChild)}
                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#0a3299]"
                                   >
                                     {greatGrandChild.title}

@@ -1,0 +1,89 @@
+/* Estilos para o conteúdo CMS */
+.cmsContent {
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.cmsContent img {
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  margin: 1rem 0 !important;
+  display: block !important;
+}
+
+.cmsContent video {
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  margin: 1rem 0 !important;
+}
+
+.cmsContent iframe {
+  max-width: 100% !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  margin: 1rem 0 !important;
+}
+
+.imageFallback {
+  background-color: #f3f4f6;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 1.1rem;
+  margin: 1rem 0;
+}
+
+/* Estilos para o conteúdo HTML renderizado */
+.cmsContent h1,
+.cmsContent h2,
+.cmsContent h3,
+.cmsContent h4,
+.cmsContent h5,
+.cmsContent h6 {
+  color: #0a3299;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.cmsContent p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.cmsContent ul,
+.cmsContent ol {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.cmsContent li {
+  margin-bottom: 0.5rem;
+}
+
+.cmsContent blockquote {
+  border-left: 4px solid #0a3299;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: #666;
+}
+
+.cmsContent code {
+  background-color: #f3f4f6;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+}
+
+.cmsContent pre {
+  background-color: #f3f4f6;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1rem 0;
+}

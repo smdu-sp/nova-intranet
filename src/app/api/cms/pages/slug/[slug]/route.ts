@@ -1,17 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPageBySlug } from "@/lib/prisma-cms";
+import { getPageBySlug } from "@/lib/cms";
 import { extractRouteParam } from "@/lib/nextjs-15-utils";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // GET - Buscar página por slug
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const slug = await extractRouteParam(params, "slug");
+    const resolvedParams = await params;
+    const slug = resolvedParams.slug;
+
+    if (!slug) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Slug é obrigatório",
+        },
+        { status: 400 }
+      );
+    }
 
     const page = await getPageBySlug(slug);
 

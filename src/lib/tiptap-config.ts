@@ -6,7 +6,8 @@ export const tiptapConfig = {
     enableCoreExtensions: true,
     editorProps: {
       attributes: {
-        class: "prose prose-sm max-w-none focus:outline-none min-h-[300px] p-4",
+        class:
+          "prose prose-sm max-w-none focus:outline-none min-h-[300px] p-4 overflow-x-auto",
       },
     },
   },
@@ -108,7 +109,7 @@ export const isClient = typeof window !== "undefined";
 // Função para verificar se o TipTap está disponível
 export const isTipTapAvailable = () => {
   try {
-    return isClient && require("@tiptap/react");
+    return isClient && typeof window !== "undefined";
   } catch {
     return false;
   }

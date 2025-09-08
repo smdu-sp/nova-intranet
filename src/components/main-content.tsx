@@ -136,33 +136,17 @@ export default function MainContent() {
           Sistema de Administração
         </h2>
         <div className="space-y-4">
-          <h3 className="font-bold text-[#333333]">
-            Painel Completo de Gerenciamento
-          </h3>
+          <h3 className="font-bold text-[#333333]">Sistema de Administração</h3>
           <p className="text-[#666666] text-sm leading-relaxed">
-            Acesse o dashboard completo para gerenciar páginas, posts, menus e
-            todo o conteúdo da intranet.
+            Acesse os painéis para gerenciar o conteúdo da intranet.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Button
-              className="bg-[#0a3299] hover:bg-[#395aad] text-white px-4 py-2 text-sm w-full"
-              onClick={() => window.open("/admin/dashboard", "_blank")}
-            >
-              🚀 DASHBOARD ADMIN
-            </Button>
-            <Button
               variant="outline"
               className="text-[#0a3299] border-[#0a3299] hover:bg-[#0a3299] hover:text-white px-4 py-2 text-sm w-full"
-              onClick={() => window.open("/admin/cms", "_blank")}
+              onClick={() => window.open("/admin/pages", "_blank")}
             >
               📄 GERENCIAR PÁGINAS
-            </Button>
-            <Button
-              variant="outline"
-              className="text-[#0a3299] border-[#0a3299] hover:bg-[#0a3299] hover:text-white px-4 py-2 text-sm w-full"
-              onClick={() => window.open("/admin/posts", "_blank")}
-            >
-              ✍️ GERENCIAR POSTS
             </Button>
             <Button
               variant="outline"

@@ -1,15 +1,15 @@
-import pool from "./db";
+import { CMSPage } from "@prisma/client";
+import prisma from "./prisma";
 
-export interface CMSPage {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  meta_description?: string;
-  is_published: boolean;
-  created_at: Date;
-  updated_at: Date;
-  created_by?: string;
+export interface CMSPageWithImages extends CMSPage {
+  images?: Array<{
+    id: number;
+    image_url: string;
+    alt_text?: string;
+    caption?: string;
+    order_position: number;
+    is_featured: boolean;
+  }>;
 }
 
 export interface CreatePageData {
@@ -39,21 +39,19 @@ export function generateSlug(title: string): string {
 }
 
 // Buscar todas as páginas publicadas
-export async function getPublishedPages(): Promise<CMSPage[]> {
+export async function getPublishedPages(): Promise<CMSPageWithImages[]> {
   try {
-    const connection = await pool.getConnection();
-
-    const query = `
-      SELECT id, title, slug, content, meta_description, is_published, created_at, updated_at, created_by
-      FROM cms_pages
-      WHERE is_published = TRUE
-      ORDER BY title ASC
-    `;
-
-    const [rows] = await connection.execute(query);
-    connection.release();
-
-    return rows as CMSPage[];
+    return await prisma.cMSPage.findMany({
+      where: { is_published: true },
+      orderBy: { title: "asc" },
+      include: {
+        images: {
+          orderBy: {
+            order_position: "asc",
+          },
+        },
+      },
+    });
   } catch (error) {
     console.error("❌ Erro ao buscar páginas publicadas:", error);
     throw error;
@@ -61,20 +59,18 @@ export async function getPublishedPages(): Promise<CMSPage[]> {
 }
 
 // Buscar todas as páginas (admin)
-export async function getAllPages(): Promise<CMSPage[]> {
+export async function getAllPages(): Promise<CMSPageWithImages[]> {
   try {
-    const connection = await pool.getConnection();
-
-    const query = `
-      SELECT id, title, slug, content, meta_description, is_published, created_at, updated_at, created_by
-      FROM cms_pages
-      ORDER BY updated_at DESC
-    `;
-
-    const [rows] = await connection.execute(query);
-    connection.release();
-
-    return rows as CMSPage[];
+    return await prisma.cMSPage.findMany({
+      orderBy: { updated_at: "desc" },
+      include: {
+        images: {
+          orderBy: {
+            order_position: "asc",
+          },
+        },
+      },
+    });
   } catch (error) {
     console.error("❌ Erro ao buscar todas as páginas:", error);
     throw error;
@@ -82,21 +78,23 @@ export async function getAllPages(): Promise<CMSPage[]> {
 }
 
 // Buscar página por slug
-export async function getPageBySlug(slug: string): Promise<CMSPage | null> {
+export async function getPageBySlug(
+  slug: string
+): Promise<CMSPageWithImages | null> {
   try {
-    const connection = await pool.getConnection();
-
-    const query = `
-      SELECT id, title, slug, content, meta_description, is_published, created_at, updated_at, created_by
-      FROM cms_pages
-      WHERE slug = ? AND is_published = TRUE
-    `;
-
-    const [rows] = await connection.execute(query, [slug]);
-    connection.release();
-
-    const pages = rows as CMSPage[];
-    return pages.length > 0 ? pages[0] : null;
+    return await prisma.cMSPage.findFirst({
+      where: {
+        slug,
+        is_published: true,
+      },
+      include: {
+        images: {
+          orderBy: {
+            order_position: "asc",
+          },
+        },
+      },
+    });
   } catch (error) {
     console.error("❌ Erro ao buscar página por slug:", error);
     throw error;
@@ -104,21 +102,20 @@ export async function getPageBySlug(slug: string): Promise<CMSPage | null> {
 }
 
 // Buscar página por ID (admin)
-export async function getPageById(id: number): Promise<CMSPage | null> {
+export async function getPageById(
+  id: number
+): Promise<CMSPageWithImages | null> {
   try {
-    const connection = await pool.getConnection();
-
-    const query = `
-      SELECT id, title, slug, content, meta_description, is_published, created_at, updated_at, created_by
-      FROM cms_pages
-      WHERE id = ?
-    `;
-
-    const [rows] = await connection.execute(query, [id]);
-    connection.release();
-
-    const pages = rows as CMSPage[];
-    return pages.length > 0 ? pages[0] : null;
+    return await prisma.cMSPage.findUnique({
+      where: { id },
+      include: {
+        images: {
+          orderBy: {
+            order_position: "asc",
+          },
+        },
+      },
+    });
   } catch (error) {
     console.error("❌ Erro ao buscar página por ID:", error);
     throw error;
@@ -126,35 +123,26 @@ export async function getPageById(id: number): Promise<CMSPage | null> {
 }
 
 // Criar nova página
-export async function createPage(data: CreatePageData): Promise<CMSPage> {
+export async function createPage(
+  data: CreatePageData
+): Promise<CMSPageWithImages> {
   try {
-    const connection = await pool.getConnection();
-
     const slug = generateSlug(data.title);
 
-    const query = `
-      INSERT INTO cms_pages (title, slug, content, meta_description, created_by)
-      VALUES (?, ?, ?, ?, ?)
-    `;
-
-    const [result] = await connection.execute(query, [
-      data.title,
-      slug,
-      data.content,
-      data.meta_description || null,
-      data.created_by || "admin",
-    ]);
-
-    connection.release();
-
-    const insertResult = result as any;
-    const newPage = await getPageById(insertResult.insertId);
-
-    if (!newPage) {
-      throw new Error("Erro ao criar página");
-    }
-
-    return newPage;
+    return await prisma.cMSPage.create({
+      data: {
+        title: data.title,
+        slug,
+        content: data.content,
+        meta_description: data.meta_description || null,
+        created_by: data.created_by || "admin",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      include: {
+        images: true,
+      },
+    });
   } catch (error) {
     console.error("❌ Erro ao criar página:", error);
     throw error;
@@ -165,65 +153,36 @@ export async function createPage(data: CreatePageData): Promise<CMSPage> {
 export async function updatePage(
   id: number,
   data: UpdatePageData
-): Promise<CMSPage> {
+): Promise<CMSPageWithImages> {
   try {
-    const connection = await pool.getConnection();
-
-    let slug = undefined;
-    if (data.title) {
-      slug = generateSlug(data.title);
-    }
-
-    const updateFields: string[] = [];
-    const updateValues: any[] = [];
+    const updateData: any = {
+      updated_at: new Date(),
+    };
 
     if (data.title) {
-      updateFields.push("title = ?");
-      updateValues.push(data.title);
-    }
-
-    if (slug) {
-      updateFields.push("slug = ?");
-      updateValues.push(slug);
+      updateData.title = data.title;
+      updateData.slug = generateSlug(data.title);
     }
 
     if (data.content !== undefined) {
-      updateFields.push("content = ?");
-      updateValues.push(data.content);
+      updateData.content = data.content;
     }
 
     if (data.meta_description !== undefined) {
-      updateFields.push("meta_description = ?");
-      updateValues.push(data.meta_description);
+      updateData.meta_description = data.meta_description;
     }
 
     if (data.is_published !== undefined) {
-      updateFields.push("is_published = ?");
-      updateValues.push(data.is_published);
+      updateData.is_published = data.is_published;
     }
 
-    if (updateFields.length === 0) {
-      throw new Error("Nenhum campo para atualizar");
-    }
-
-    updateValues.push(id);
-
-    const query = `
-      UPDATE cms_pages
-      SET ${updateFields.join(", ")}, updated_at = CURRENT_TIMESTAMP
-      WHERE id = ?
-    `;
-
-    await connection.execute(query, updateValues);
-    connection.release();
-
-    const updatedPage = await getPageById(id);
-
-    if (!updatedPage) {
-      throw new Error("Erro ao atualizar página");
-    }
-
-    return updatedPage;
+    return await prisma.cMSPage.update({
+      where: { id },
+      data: updateData,
+      include: {
+        images: true,
+      },
+    });
   } catch (error) {
     console.error("❌ Erro ao atualizar página:", error);
     throw error;
@@ -231,17 +190,11 @@ export async function updatePage(
 }
 
 // Deletar página
-export async function deletePage(id: number): Promise<boolean> {
+export async function deletePage(id: number): Promise<void> {
   try {
-    const connection = await pool.getConnection();
-
-    const query = "DELETE FROM cms_pages WHERE id = ?";
-
-    const [result] = await connection.execute(query, [id]);
-    connection.release();
-
-    const deleteResult = result as any;
-    return deleteResult.affectedRows > 0;
+    await prisma.cMSPage.delete({
+      where: { id },
+    });
   } catch (error) {
     console.error("❌ Erro ao deletar página:", error);
     throw error;

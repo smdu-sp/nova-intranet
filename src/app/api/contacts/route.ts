@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import mysql from "mysql2/promise";
 import { dbConfig } from "@/config/database";
 
+interface ContactRow {
+  cp_nome: string;
+  [key: string]: unknown;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -13,7 +18,7 @@ export async function GET(request: NextRequest) {
     const connection = await mysql.createConnection(dbConfig);
 
     let query = "SELECT * FROM tbl_telefones WHERE 1=1";
-    let params: any[] = [];
+    const params: string[] = [];
 
     // Filtro de busca (prioridade sobre letra)
     if (search) {
@@ -44,7 +49,7 @@ export async function GET(request: NextRequest) {
     if (Array.isArray(rows) && rows.length > 0) {
       console.log(
         "📋 Primeiros 3 resultados:",
-        rows.slice(0, 3).map((r: any) => r.cp_nome)
+        rows.slice(0, 3).map((r: ContactRow) => r.cp_nome)
       );
     }
 
