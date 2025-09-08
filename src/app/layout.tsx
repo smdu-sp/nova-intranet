@@ -28,6 +28,7 @@ export default function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${robotoMono.variable} antialiased overflow-x-hidden`}
+        suppressHydrationWarning={true}
       >
         {children}
       </body>
