@@ -25,8 +25,37 @@ export default function CreatePage() {
   const [metaDescription, setMetaDescription] = useState("");
   const [content, setContent] = useState("");
   const [isPublished, setIsPublished] = useState(true);
+  const [addToMenu, setAddToMenu] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const addPageToMenu = async (pageTitle: string, pageSlug: string) => {
+    try {
+      const response = await fetch("/api/admin/menus/items", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          menu_id: 5, // ID do menu principal
+          parent_id: null,
+          level: 0,
+          title: pageTitle,
+          url: `/pagina/${pageSlug}`,
+          target: "_self",
+          is_active: true,
+        }),
+      });
+
+      if (response.ok) {
+        console.log("Página adicionada ao menu com sucesso!");
+      } else {
+        console.error("Erro ao adicionar página ao menu");
+      }
+    } catch (error) {
+      console.error("Erro ao adicionar página ao menu:", error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,12 +88,21 @@ export default function CreatePage() {
       });
 
       if (response.ok) {
-        await response.json();
+        const result = await response.json();
         success("Página criada com sucesso!");
 
-        // Redirecionar para a lista de páginas após 2 segundos
+        // Adicionar ao menu se solicitado
+        if (addToMenu) {
+          try {
+            await addPageToMenu(result.data.title, result.data.slug);
+          } catch (error) {
+            console.error("Erro ao adicionar ao menu:", error);
+          }
+        }
+
+        // Redirecionar para a página principal com a nova página após 2 segundos
         setTimeout(() => {
-          router.push(`/admin/pages`);
+          router.push(`/?page=${result.data.slug}`);
         }, 2000);
       } else {
         const errorData = await response.json();
@@ -143,7 +181,7 @@ export default function CreatePage() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-3">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -153,6 +191,18 @@ export default function CreatePage() {
                   />
                   <span className="text-sm font-medium text-gray-700">
                     Publicar página imediatamente
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={addToMenu}
+                    onChange={(e) => setAddToMenu(e.target.checked)}
+                    className="rounded border-gray-300 text-[#0a3299] focus:ring-[#0a3299]"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    Adicionar ao menu principal
                   </span>
                 </label>
               </div>
