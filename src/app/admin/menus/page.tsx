@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useToast, ToastContainer } from "@/components/ui/toast";
 import { NavigationMenu, MenuItem } from "@prisma/client";
+import { AdminLayout } from "@/components/admin-layout";
 
 interface EditingItem {
   id: number;
@@ -57,10 +58,27 @@ export default function MenusPage() {
     menuId: number;
   } | null>(null);
   const [dragOverItem, setDragOverItem] = useState<number | null>(null);
+  const [user, setUser] = useState<{
+    username: string;
+    displayName: string;
+  } | null>(null);
 
   useEffect(() => {
     fetchMenus();
+    fetchUser();
   }, []);
+
+  const fetchUser = async () => {
+    try {
+      const response = await fetch("/api/auth/me");
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+      }
+    } catch (error) {
+      console.error("Erro ao obter dados do usuÃ¡rio:", error);
+    }
+  };
 
   const fetchMenus = async () => {
     try {
@@ -108,7 +126,7 @@ export default function MenusPage() {
     const location = formData.get("location") as string;
 
     if (!name.trim() || !location.trim()) {
-      showError("Erro", "Nome e localização são obrigatórios");
+      showError("Erro", "Nome e localizaÃ§Ã£o sÃ£o obrigatÃ³rios");
       return;
     }
 
@@ -124,7 +142,7 @@ export default function MenusPage() {
       const result = await response.json();
 
       if (result.success) {
-        success("Menu criado com sucesso!", "O menu foi criado e está ativo");
+        success("Menu criado com sucesso!", "O menu foi criado e estÃ¡ ativo");
         setShowCreateForm(false);
         await fetchMenus();
       } else {
@@ -139,7 +157,7 @@ export default function MenusPage() {
   const handleDeleteMenu = async (id: number) => {
     if (
       !confirm(
-        "Tem certeza que deseja deletar este menu? Todos os itens serão removidos."
+        "Tem certeza que deseja deletar este menu? Todos os itens serÃ£o removidos."
       )
     ) {
       return;
@@ -181,8 +199,8 @@ export default function MenusPage() {
 
   const getLocationLabel = (location: string) => {
     const labels: { [key: string]: string } = {
-      header: "Cabeçalho",
-      footer: "Rodapé",
+      header: "CabeÃ§alho",
+      footer: "RodapÃ©",
       sidebar: "Barra Lateral",
     };
     return labels[location] || location;
@@ -195,7 +213,7 @@ export default function MenusPage() {
   ) => {
     return (
       <div className="space-y-2">
-        {/* Área de drop para nível raiz */}
+        {/* Ãrea de drop para nÃ­vel raiz */}
         {level === 0 && (
           <div
             className={`border-2 border-dashed border-gray-300 rounded-lg p-4 text-center text-gray-500 hover:border-gray-400 transition-colors ${
@@ -207,7 +225,7 @@ export default function MenusPage() {
           >
             <GripVertical className="h-6 w-6 mx-auto mb-2 text-gray-400" />
             <p className="text-sm">
-              Arraste itens aqui para movê-los para o nível raiz
+              Arraste itens aqui para movÃª-los para o nÃ­vel raiz
             </p>
           </div>
         )}
@@ -244,7 +262,7 @@ export default function MenusPage() {
                           title: e.target.value,
                         })
                       }
-                      placeholder="Título do item"
+                      placeholder="TÃ­tulo do item"
                       className="text-sm"
                     />
                     <Input
@@ -290,7 +308,7 @@ export default function MenusPage() {
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-sm">{item.title}</span>
                       <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                        Nível {item.level}
+                        NÃ­vel {item.level}
                       </span>
                       {item.parent_id && (
                         <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
@@ -464,7 +482,7 @@ export default function MenusPage() {
 
       if (!draggedItemData || !targetItemData) return;
 
-      // Primeiro, tentar reordenar no mesmo nível
+      // Primeiro, tentar reordenar no mesmo nÃ­vel
       const reorderSuccess = await handleReorderInSameLevel(
         draggedItem.id,
         targetItemId,
@@ -474,41 +492,44 @@ export default function MenusPage() {
       if (reorderSuccess) {
         success(
           "Ordem atualizada!",
-          "Os itens foram reordenados no mesmo nível"
+          "Os itens foram reordenados no mesmo nÃ­vel"
         );
         await fetchMenus();
         setDraggedItem(null);
         return;
       }
 
-      // Se não foi possível reordenar no mesmo nível, tentar mover entre níveis
-      // Verificar se o movimento é válido
+      // Se nÃ£o foi possÃ­vel reordenar no mesmo nÃ­vel, tentar mover entre nÃ­veis
+      // Verificar se o movimento Ã© vÃ¡lido
       if (!isValidMove(draggedItemData, targetItemData)) {
-        showError("Movimento inválido", "Não é possível mover para este local");
+        showError(
+          "Movimento invÃ¡lido",
+          "NÃ£o Ã© possÃ­vel mover para este local"
+        );
         return;
       }
 
-      // Determinar o novo parent_id e nível
+      // Determinar o novo parent_id e nÃ­vel
       let newParentId: number | null = null;
       let newLevel = 1;
 
       if (targetItemData.level === 1) {
-        // Soltando em um item de nível 1 - vira filho dele
+        // Soltando em um item de nÃ­vel 1 - vira filho dele
         newParentId = targetItemData.id;
         newLevel = 2;
       } else if (targetItemData.level === 2) {
-        // Soltando em um item de nível 2 - vira filho dele
+        // Soltando em um item de nÃ­vel 2 - vira filho dele
         newParentId = targetItemData.id;
         newLevel = 3;
       } else if (targetItemData.level === 3) {
-        // Soltando em um item de nível 3 - vira filho dele
+        // Soltando em um item de nÃ­vel 3 - vira filho dele
         newParentId = targetItemData.id;
         newLevel = 4;
       } else {
-        // Soltando em um item de nível 4 - não pode ter filhos
+        // Soltando em um item de nÃ­vel 4 - nÃ£o pode ter filhos
         showError(
-          "Movimento inválido",
-          "Itens de nível 4 não podem ter filhos"
+          "Movimento invÃ¡lido",
+          "Itens de nÃ­vel 4 nÃ£o podem ter filhos"
         );
         return;
       }
@@ -544,7 +565,7 @@ export default function MenusPage() {
     }
   };
 
-  // Função para reordenar itens dentro do mesmo nível
+  // FunÃ§Ã£o para reordenar itens dentro do mesmo nÃ­vel
   const handleReorderInSameLevel = async (
     draggedId: number,
     targetId: number,
@@ -556,7 +577,7 @@ export default function MenusPage() {
 
       if (!draggedItem || !targetItem) return;
 
-      // Só reordenar se estiverem no mesmo nível e mesmo pai
+      // SÃ³ reordenar se estiverem no mesmo nÃ­vel e mesmo pai
       if (
         draggedItem.level !== targetItem.level ||
         draggedItem.parent_id !== targetItem.parent_id
@@ -564,7 +585,7 @@ export default function MenusPage() {
         return false;
       }
 
-      // Obter todos os itens do mesmo nível e pai
+      // Obter todos os itens do mesmo nÃ­vel e pai
       const sameLevelItems = getItemsAtSameLevel(
         menuItems[menuId] || [],
         draggedItem.level,
@@ -602,7 +623,7 @@ export default function MenusPage() {
     }
   };
 
-  // Função para obter itens do mesmo nível e mesmo pai
+  // FunÃ§Ã£o para obter itens do mesmo nÃ­vel e mesmo pai
   const getItemsAtSameLevel = (
     items: MenuItemWithChildren[],
     level: number,
@@ -630,25 +651,25 @@ export default function MenusPage() {
     setDragOverItem(null);
   };
 
-  // Função para validar se o movimento é válido
+  // FunÃ§Ã£o para validar se o movimento Ã© vÃ¡lido
   const isValidMove = (
     draggedItem: MenuItemWithChildren,
     targetItem: MenuItemWithChildren
   ): boolean => {
-    // Não pode mover para si mesmo
+    // NÃ£o pode mover para si mesmo
     if (draggedItem.id === targetItem.id) return false;
 
-    // Não pode mover para um filho (criaria loop infinito)
+    // NÃ£o pode mover para um filho (criaria loop infinito)
     if (isDescendant(draggedItem, targetItem)) return false;
 
-    // Verificar se o nível resultante seria válido
+    // Verificar se o nÃ­vel resultante seria vÃ¡lido
     const newLevel = targetItem.level + 1;
     if (newLevel > 4) return false;
 
     return true;
   };
 
-  // Função para verificar se um item é descendente de outro
+  // FunÃ§Ã£o para verificar se um item Ã© descendente de outro
   const isDescendant = (
     parent: MenuItemWithChildren,
     child: MenuItemWithChildren
@@ -698,23 +719,26 @@ export default function MenusPage() {
     const target = formData.get("target") as string;
 
     if (!title.trim() || !url.trim()) {
-      showError("Erro", "Título e URL são obrigatórios");
+      showError("Erro", "TÃ­tulo e URL sÃ£o obrigatÃ³rios");
       return;
     }
 
-    // Validação de nível baseado no item pai
+    // ValidaÃ§Ã£o de nÃ­vel baseado no item pai
     let actualLevel = level;
     if (parentId) {
       const parentItem = findMenuItemById(menuItems[menuId] || [], parentId);
       if (parentItem) {
         actualLevel = parentItem.level + 1;
         if (actualLevel > 4) {
-          showError("Erro", "Não é possível criar mais de 4 níveis de menu");
+          showError(
+            "Erro",
+            "NÃ£o Ã© possÃ­vel criar mais de 4 nÃ­veis de menu"
+          );
           return;
         }
       }
     } else {
-      actualLevel = 1; // Sem pai = nível 1
+      actualLevel = 1; // Sem pai = nÃ­vel 1
     }
 
     try {
@@ -749,7 +773,7 @@ export default function MenusPage() {
     }
   };
 
-  // Função auxiliar para encontrar item por ID em qualquer nível
+  // FunÃ§Ã£o auxiliar para encontrar item por ID em qualquer nÃ­vel
   const findMenuItemById = (
     items: MenuItemWithChildren[],
     id: number
@@ -764,7 +788,7 @@ export default function MenusPage() {
     return null;
   };
 
-  // Função para obter todos os itens disponíveis para seleção como pai
+  // FunÃ§Ã£o para obter todos os itens disponÃ­veis para seleÃ§Ã£o como pai
   const getAvailableParentItems = (
     menuId: number,
     excludeId?: number
@@ -780,7 +804,7 @@ export default function MenusPage() {
     const collectItems = (items: MenuItemWithChildren[], path: string = "") => {
       items.forEach((item) => {
         if (item.id !== excludeId && item.level < 4) {
-          // Não pode ser pai se já está no nível 4
+          // NÃ£o pode ser pai se jÃ¡ estÃ¡ no nÃ­vel 4
           const currentPath = path ? `${path} > ${item.title}` : item.title;
           result.push({
             id: item.id,
@@ -812,13 +836,13 @@ export default function MenusPage() {
       );
       if (!draggedItemData) return;
 
-      // Verificar se o item já está no nível raiz
+      // Verificar se o item jÃ¡ estÃ¡ no nÃ­vel raiz
       if (draggedItemData.level === 1) {
-        showError("Movimento inválido", "Este item já está no nível raiz.");
+        showError("Movimento invÃ¡lido", "Este item jÃ¡ estÃ¡ no nÃ­vel raiz.");
         return;
       }
 
-      // Determinar o novo nível (raiz)
+      // Determinar o novo nÃ­vel (raiz)
       const newLevel = 1;
 
       // Atualizar o item movido
@@ -828,7 +852,7 @@ export default function MenusPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          parent_id: null, // Para mover para o nível raiz, parent_id deve ser null
+          parent_id: null, // Para mover para o nÃ­vel raiz, parent_id deve ser null
           level: newLevel,
         }),
       });
@@ -837,8 +861,8 @@ export default function MenusPage() {
 
       if (result.success) {
         success(
-          "Item movido com sucesso para o nível raiz!",
-          "O item foi movido para o nível raiz."
+          "Item movido com sucesso para o nÃ­vel raiz!",
+          "O item foi movido para o nÃ­vel raiz."
         );
         await fetchMenus();
       } else {
@@ -861,17 +885,11 @@ export default function MenusPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-[#0a3299] mb-2">
-            Gerenciamento de Menus
-          </h1>
-          <p className="text-gray-600">
-            Crie e gerencie menus de navegação para a intranet
-          </p>
-        </div>
+    <AdminLayout
+      title="Gerenciamento de Menus"
+      description="Crie e gerencie menus de navegaÃ§Ã£o para a intranet"
+    >
+      <div className="flex justify-end items-center mb-8">
         <Button
           onClick={() => setShowCreateForm(true)}
           className="bg-[#0a3299] hover:bg-[#082a7a]"
@@ -891,7 +909,7 @@ export default function MenusPage() {
                 Nenhum menu criado
               </h3>
               <p className="text-gray-500 mb-4">
-                Comece criando seu primeiro menu de navegação
+                Comece criando seu primeiro menu de navegaÃ§Ã£o
               </p>
               <Button onClick={() => setShowCreateForm(true)}>
                 <Plus className="w-4 h-4 mr-2" />
@@ -900,109 +918,40 @@ export default function MenusPage() {
             </CardContent>
           </Card>
         ) : (
-          menus.map((menu) => (
-            <Card key={menu.id} className="hover:shadow-md transition-shadow">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleMenuExpansion(menu.id)}
-                      className="p-1"
-                    >
-                      {expandedMenus.has(menu.id) ? (
-                        <ChevronDown className="h-4 w-4" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4" />
-                      )}
-                    </Button>
-                    <div>
-                      <CardTitle className="text-lg">{menu.name}</CardTitle>
-                      <CardDescription>
-                        Localização: {getLocationLabel(menu.location)}
-                      </CardDescription>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full flex items-center gap-1 ${
-                        menu.is_active
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {menu.is_active ? (
-                        <Eye className="w-3 h-3" />
-                      ) : (
-                        <EyeOff className="w-3 h-3" />
-                      )}
-                      {menu.is_active ? "Ativo" : "Inativo"}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setEditingMenu(menu)}
-                    >
-                      <Edit className="w-4 h-4 mr-1" />
-                      Editar
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDeleteMenu(menu.id)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                    >
-                      <Trash2 className="w-4 h-4 mr-1" />
-                      Deletar
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-
-              {expandedMenus.has(menu.id) && (
-                <CardContent>
-                  <div className="border-t pt-4">
-                    <h4 className="font-medium mb-3">Itens do Menu</h4>
-                    {menuItems[menu.id] && menuItems[menu.id].length > 0 ? (
-                      <div className="space-y-2">
-                        {renderMenuItems(menuItems[menu.id], 0, menu.id)}
-                      </div>
-                    ) : (
-                      <div className="text-center py-4 text-gray-500">
-                        <LinkIcon className="h-8 w-8 mx-auto mb-2 text-gray-300" />
-                        <p>Nenhum item neste menu</p>
-                      </div>
-                    )}
-                    <div className="mt-4">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowAddItemForm(menu.id)}
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Adicionar Item
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              )}
-            </Card>
-          ))
+          <div
+            style={{
+              backgroundColor: "lightblue",
+              padding: "20px",
+              border: "2px solid blue",
+            }}
+          >
+            <h2>MENUS ENCONTRADOS: {menus.length}</h2>
+            {menus.map((menu) => (
+              <div
+                key={menu.id}
+                style={{
+                  backgroundColor: "white",
+                  padding: "10px",
+                  margin: "10px",
+                  border: "1px solid black",
+                }}
+              >
+                <h3>Menu: {menu.name}</h3>
+                <p>ID: {menu.id}</p>
+                <p>LocalizaÃ§Ã£o: {menu.location}</p>
+                <p>Ativo: {menu.is_active ? "Sim" : "NÃ£o"}</p>
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
-      {/* Modal de Criação */}
+      {/* Modal de CriaÃ§Ã£o */}
       {showCreateForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            <h3 className="text-lg font-semibold mb-4">Criar Novo Menu</h3>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleCreateMenu(new FormData(e.currentTarget));
-              }}
-            >
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Criar Novo Menu</h2>
+            <form onSubmit={handleCreateMenu}>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -1010,28 +959,26 @@ export default function MenusPage() {
                   </label>
                   <Input
                     name="name"
-                    type="text"
                     placeholder="Ex: Menu Principal"
                     required
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Localização
+                    LocalizaÃ§Ã£o
                   </label>
                   <select
                     name="location"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0a3299] focus:border-transparent"
+                    className="w-full p-2 border border-gray-300 rounded-md"
                     required
                   >
-                    <option value="">Selecione...</option>
-                    <option value="header">Cabeçalho</option>
-                    <option value="footer">Rodapé</option>
+                    <option value="header">CabeÃ§alho</option>
+                    <option value="footer">RodapÃ©</option>
                     <option value="sidebar">Barra Lateral</option>
                   </select>
                 </div>
               </div>
-              <div className="flex gap-2 mt-6">
+              <div className="flex gap-3 mt-6">
                 <Button type="submit" className="flex-1">
                   Criar Menu
                 </Button>
@@ -1048,104 +995,6 @@ export default function MenusPage() {
           </div>
         </div>
       )}
-
-      {/* Modal de Adicionar Item */}
-      {showAddItemForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            <h3 className="text-lg font-semibold mb-4">
-              Adicionar Item ao Menu
-            </h3>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleCreateMenuItem(new FormData(e.currentTarget));
-              }}
-            >
-              <div className="space-y-4">
-                <input type="hidden" name="menu_id" value={showAddItemForm} />
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Item Pai (opcional)
-                  </label>
-                  <select
-                    name="parent_id"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0a3299] focus:border-transparent"
-                  >
-                    <option value="">Nenhum (Item Principal - Nível 1)</option>
-                    {getAvailableParentItems(showAddItemForm).map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.path} (Nível {item.level + 1})
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-xs text-gray-500 mt-1">
-                    O nível será automaticamente definido baseado no item pai
-                    selecionado
-                  </p>
-                </div>
-
-                <input type="hidden" name="level" value="1" />
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Título
-                  </label>
-                  <Input
-                    name="title"
-                    type="text"
-                    placeholder="Ex: Institucional"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    URL
-                  </label>
-                  <Input
-                    name="url"
-                    type="text"
-                    placeholder="Ex: /institucional"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Target
-                  </label>
-                  <select
-                    name="target"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0a3299] focus:border-transparent"
-                  >
-                    <option value="_self">Mesma janela</option>
-                    <option value="_blank">Nova janela</option>
-                    <option value="_parent">Janela pai</option>
-                  </select>
-                </div>
-              </div>
-              <div className="flex gap-2 mt-6">
-                <Button type="submit" className="flex-1">
-                  Adicionar Item
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowAddItemForm(null)}
-                  className="flex-1"
-                >
-                  Cancelar
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Container de Toast */}
-      <ToastContainer toasts={toasts} onClose={removeToast} />
-    </div>
+    </AdminLayout>
   );
 }

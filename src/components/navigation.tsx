@@ -23,19 +23,17 @@ export default function Navigation() {
     try {
       const [pagesRes, menuRes] = await Promise.all([
         fetch("/api/cms/pages/public"),
-        fetch("/api/admin/menus/5/items/hierarchical"),
+        fetch("/api/admin/menus/1/items/hierarchical"),
       ]);
 
       const pagesResult = await pagesRes.json();
       const menuResult = await menuRes.json();
 
-      console.log(menuResult);
-
       if (pagesResult.success) {
         setCmsPages(pagesResult.data);
       }
 
-      if (menuResult.success) {
+      if (menuResult.success && menuResult.data) {
         setMenuItems(menuResult.data);
       }
     } catch (error) {

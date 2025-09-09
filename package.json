@@ -43,6 +43,8 @@
     "@tiptap/starter-kit": "^3.4.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "jose": "^6.1.0",
+    "ldapts": "^8.0.9",
     "lodash.throttle": "^4.1.1",
     "lucide-react": "^0.541.0",
     "mysql2": "^3.14.3",
