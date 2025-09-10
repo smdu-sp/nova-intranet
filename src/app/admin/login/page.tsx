@@ -127,7 +127,7 @@ export default function AdminLoginPage() {
   // Função para lidar com tecla Enter
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !isLoading) {
-      handleSubmit(e as any);
+      handleSubmit(e as React.FormEvent<HTMLFormElement>);
     }
   };
 

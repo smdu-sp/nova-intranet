@@ -266,7 +266,11 @@ export default function AdminGaleriasPage() {
                     {/* Ações */}
                     <div className="flex gap-2 pt-2 border-t border-gray-100">
                       <Link href={`/galerias/${gallery.id}`} className="flex-1">
-                        <Button variant="outline" size="sm" className="w-full">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-black border-black bg-transparent hover:bg-black hover:text-white"
+                        >
                           <Eye className="w-3 h-3 mr-1" />
                           Visualizar
                         </Button>
@@ -275,7 +279,11 @@ export default function AdminGaleriasPage() {
                         href={`/admin/galerias/edit/${gallery.id}`}
                         className="flex-1"
                       >
-                        <Button variant="outline" size="sm" className="w-full">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-black border-black bg-transparent hover:bg-black hover:text-white"
+                        >
                           <Edit className="w-3 h-3 mr-1" />
                           Editar
                         </Button>

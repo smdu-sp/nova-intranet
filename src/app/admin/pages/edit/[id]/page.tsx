@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Save, Eye } from "lucide-react";
 import Link from "next/link";
 import { AdminLayout } from "@/components/admin-layout";
-import RichTextEditor from "@/components/rich-text-editor";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import styles from "./page.module.css";
 
 interface Page {
   id: number;
@@ -156,7 +157,10 @@ export default function EditPage() {
             <p className="text-red-800 text-sm">{error}</p>
             <div className="mt-4">
               <Link href="/admin/pages">
-                <Button variant="outline">
+                <Button
+                  variant="outline"
+                  className="text-black border-black bg-transparent hover:bg-black hover:text-white"
+                >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Voltar para Páginas
                 </Button>
@@ -177,7 +181,10 @@ export default function EditPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <Link href="/admin/pages">
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              className="text-black border-black bg-transparent hover:bg-black hover:text-white"
+            >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Voltar para Páginas
             </Button>
@@ -272,10 +279,13 @@ export default function EditPage() {
                 <CardTitle>Conteúdo</CardTitle>
               </CardHeader>
               <CardContent>
-                <RichTextEditor
-                  content={formData.content}
-                  onChange={handleContentChange}
-                />
+                <div className={styles.simpleEditorContainer}>
+                  <SimpleEditor
+                    content={formData.content}
+                    onChange={handleContentChange}
+                    placeholder="Digite o conteúdo da sua página aqui..."
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>

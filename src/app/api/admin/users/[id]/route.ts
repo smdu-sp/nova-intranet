@@ -7,7 +7,7 @@ import { UserService } from "@/lib/user-service";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verifica se o usuário tem permissão de admin
@@ -19,7 +19,8 @@ export async function GET(
       );
     }
 
-    const userId = parseInt(params.id);
+    const resolvedParams = await params;
+    const userId = parseInt(resolvedParams.id);
     if (isNaN(userId)) {
       return NextResponse.json(
         { error: "ID do usuário inválido" },
@@ -50,7 +51,7 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verifica se o usuário tem permissão de admin
@@ -62,7 +63,8 @@ export async function PUT(
       );
     }
 
-    const userId = parseInt(params.id);
+    const resolvedParams = await params;
+    const userId = parseInt(resolvedParams.id);
     if (isNaN(userId)) {
       return NextResponse.json(
         { error: "ID do usuário inválido" },
@@ -96,7 +98,7 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verifica se o usuário tem permissão de admin
@@ -108,7 +110,8 @@ export async function DELETE(
       );
     }
 
-    const userId = parseInt(params.id);
+    const resolvedParams = await params;
+    const userId = parseInt(resolvedParams.id);
     if (isNaN(userId)) {
       return NextResponse.json(
         { error: "ID do usuário inválido" },

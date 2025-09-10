@@ -205,7 +205,11 @@ export default function PagesPage() {
 
                   <div className="flex gap-2">
                     <Link href={`/admin/pages/edit/${page.id}`}>
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 text-black border-black bg-transparent hover:bg-black hover:text-white"
+                      >
                         <Edit className="w-3 h-3 mr-1" />
                         Editar
                       </Button>

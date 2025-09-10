@@ -7,7 +7,7 @@ import { UserService } from "@/lib/user-service";
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verifica se o usuário tem permissão de admin
@@ -19,7 +19,8 @@ export async function POST(
       );
     }
 
-    const userId = parseInt(params.id);
+    const resolvedParams = await params;
+    const userId = parseInt(resolvedParams.id);
     if (isNaN(userId)) {
       return NextResponse.json(
         { error: "ID do usuário inválido" },

@@ -8,9 +8,9 @@ import {
 import { extractNumericParam } from "@/lib/nextjs-15-utils";
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // GET - Buscar página por ID

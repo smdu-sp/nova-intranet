@@ -150,6 +150,7 @@ model User {
     galleries_created Gallery[]        @relation("GalleryAuthor")
     gallery_comments  GalleryComment[] @relation("GalleryCommentAuthor")
     gallery_likes     GalleryLike[]    @relation("GalleryLikeAuthor")
+    clippings_created Clipping[]       @relation("ClippingAuthor")
 
     @@index([username])
     @@index([email])
@@ -283,4 +284,44 @@ enum PostStatus {
 enum UserRole {
     admin
     user
+}
+
+// ===== MODEL CLIPPING =====
+model Clipping {
+    id           Int      @id @default(autoincrement())
+    title        String   @db.VarChar(255)
+    date         DateTime
+    banner_image String?  @db.VarChar(500)
+    content      String   @db.LongText // Conteúdo editável com editor
+    is_published Boolean  @default(false)
+    created_by   String   @default("admin") @db.VarChar(100)
+    created_at   DateTime @default(now())
+    updated_at   DateTime @updatedAt
+
+    // Relacionamentos
+    news_items      ClippingNews[]
+    created_by_user User?          @relation("ClippingAuthor", fields: [created_by], references: [username])
+
+    @@index([created_by])
+    @@index([date])
+    @@map("clippings")
+}
+
+// ===== MODEL CLIPPING NEWS =====
+model ClippingNews {
+    id             Int      @id @default(autoincrement())
+    clipping_id    Int
+    title          String   @db.VarChar(500)
+    source         String   @db.VarChar(255)
+    description    String?  @db.Text
+    url            String?  @db.VarChar(500)
+    order_position Int      @default(0)
+    created_at     DateTime @default(now())
+    updated_at     DateTime @updatedAt
+
+    // Relacionamentos
+    clipping Clipping @relation(fields: [clipping_id], references: [id], onDelete: Cascade)
+
+    @@index([clipping_id])
+    @@map("clipping_news")
 }

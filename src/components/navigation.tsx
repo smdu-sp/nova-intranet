@@ -58,14 +58,14 @@ export default function Navigation() {
     <div key={item.id} className="relative group min-w-[120px] text-center">
       <Link
         href={getMenuLink(item)}
-        className="py-4 px-2 text-[#333333] font-semibold hover:text-[#0a3299] border-b-2 border-transparent hover:border-[#0a3299] transition-colors block"
+        className="py-4 px-2 text-[#333333] font-semibold hover:text-[#0a3299] hover:bg-gray-200 transition-colors block"
       >
         {item.title}
       </Link>
 
       {/* Submenu dropdown */}
       {item.has_children && item.children && item.children.length > 0 && (
-        <div className="uppercase font-bold absolute top-full left-0 bg-[#e5e5e5] shadow-lg border border-gray-200 rounded-md py-2 min-w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-left">
+        <div className="uppercase font-bold absolute top-full left-0 bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200 rounded-md py-2 min-w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-left">
           {item.children?.map((child: MenuItemWithChildren) => (
             <div key={child.id} className="relative group/child">
               <Link
@@ -79,7 +79,7 @@ export default function Navigation() {
               {child.has_children &&
                 child.children &&
                 child.children.length > 0 && (
-                  <div className="uppercase font-bold absolute left-full top-0 bg-[#e5e5e5] shadow-lg border border-gray-200 rounded-md py-2 min-w-48 opacity-0 invisible group-hover/child:opacity-100 group-hover/child:visible transition-all duration-200">
+                  <div className="uppercase font-bold absolute left-full top-0 bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200 rounded-md py-2 min-w-48 opacity-0 invisible group-hover/child:opacity-100 group-hover/child:visible transition-all duration-200">
                     {child.children.map((grandChild: MenuItemWithChildren) => (
                       <div
                         key={grandChild.id}
@@ -96,7 +96,7 @@ export default function Navigation() {
                         {grandChild.has_children &&
                           grandChild.children &&
                           grandChild.children.length > 0 && (
-                            <div className="uppercase font-bold absolute left-full top-0 bg-[#e5e5e5] shadow-lg border border-gray-200 rounded-md py-2 min-w-48 opacity-0 invisible group-hover/grandchild:opacity-100 group-hover/grandchild:visible transition-all duration-200">
+                            <div className="uppercase font-bold absolute left-full top-0 bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200 rounded-md py-2 min-w-48 opacity-0 invisible group-hover/grandchild:opacity-100 group-hover/grandchild:visible transition-all duration-200">
                               {grandChild.children.map(
                                 (greatGrandChild: MenuItemWithChildren) => (
                                   <Link

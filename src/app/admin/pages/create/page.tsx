@@ -122,7 +122,11 @@ export default function CreatePage() {
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link href="/admin/pages">
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-black border-black bg-transparent hover:bg-black hover:text-white"
+            >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Voltar para Páginas
             </Button>
@@ -246,7 +250,11 @@ export default function CreatePage() {
           {/* Botões de ação */}
           <div className="flex gap-4 justify-end">
             <Link href="/admin/pages">
-              <Button variant="outline" type="button">
+              <Button
+                variant="outline"
+                type="button"
+                className="text-black border-black bg-transparent hover:bg-black hover:text-white"
+              >
                 Cancelar
               </Button>
             </Link>

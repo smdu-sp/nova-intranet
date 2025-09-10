@@ -262,3 +262,19 @@ img, video, iframe {
 .img-comunicados {
   height: 330px;
 }
+
+/* Estilos para links nas páginas CMS */
+.prose a {
+  color: #0a3299 !important;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.prose a:hover {
+  color: #395aad !important;
+  text-decoration: underline;
+}
+
+.prose a:visited {
+  color: #6b46c1 !important;
+}

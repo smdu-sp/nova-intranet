@@ -26,7 +26,10 @@ export default function MainContent({ onShowGalleries }: MainContentProps) {
             imprensa do país sobre programas, planos, projetos e demais
             iniciativas da SMUL
           </p>
-          <Button className="bg-[#0a3299] hover:bg-[#395aad] text-white px-6 py-2 text-sm">
+          <Button
+            className="bg-[#0a3299] hover:bg-[#395aad] text-white px-6 py-2 text-sm"
+            onClick={() => (window.location.href = "/?page=clipping")}
+          >
             VER MAIS
           </Button>
         </div>
@@ -150,14 +153,14 @@ export default function MainContent({ onShowGalleries }: MainContentProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Button
               variant="outline"
-              className="text-[#0a3299] border-[#0a3299] hover:bg-[#0a3299] hover:text-white px-4 py-2 text-sm w-full"
+              className="text-black border-black bg-transparent hover:bg-black hover:text-white px-4 py-2 text-sm w-full"
               onClick={() => window.open("/admin/pages", "_blank")}
             >
               📄 GERENCIAR PÁGINAS
             </Button>
             <Button
               variant="outline"
-              className="text-[#0a3299] border-[#0a3299] hover:bg-[#0a3299] hover:text-white px-4 py-2 text-sm w-full"
+              className="text-black border-black bg-transparent hover:bg-black hover:text-white px-4 py-2 text-sm w-full"
               onClick={() => window.open("/admin/menus", "_blank")}
             >
               🧭 GERENCIAR MENUS

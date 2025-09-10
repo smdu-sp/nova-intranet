@@ -8,7 +8,11 @@ import { Card } from "@/components/ui/card";
 export default function TestLoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{
+    success: boolean;
+    user?: { username: string; displayName: string; email: string };
+    error?: string;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleTestLogin = async () => {

@@ -720,7 +720,7 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
         <div>
           {/* Imagem Principal com Navegação */}
           {selectedImage && (
-            <Card className="mb-6">
+            <Card className="mb-6 border-gray-200 shadow-sm border border-gray-200">
               <div className="relative aspect-[4/3] overflow-hidden group">
                 <Image
                   src={selectedImage.image_url}
@@ -744,10 +744,10 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
                             : galleryData.images.length - 1;
                         setSelectedImage(galleryData.images[prevIndex]);
                       }}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#0a3299] p-3 rounded-lg shadow-lg border border-gray-200 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-105 hover:shadow-xl"
                       title="Foto anterior (←)"
                     >
-                      <ChevronLeft className="w-6 h-6" />
+                      <ChevronLeft className="w-5 h-5" />
                     </button>
 
                     {/* Seta Direita */}
@@ -762,14 +762,14 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
                             : 0;
                         setSelectedImage(galleryData.images[nextIndex]);
                       }}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#0a3299] p-3 rounded-lg shadow-lg border border-gray-200 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-105 hover:shadow-xl"
                       title="Próxima foto (→)"
                     >
-                      <ChevronRight className="w-6 h-6" />
+                      <ChevronRight className="w-5 h-5" />
                     </button>
 
                     {/* Contador de Fotos */}
-                    <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                    <div className="absolute top-4 right-4 bg-white/90 text-[#0a3299] px-3 py-2 rounded-lg shadow-lg border border-gray-200 text-sm font-medium">
                       {galleryData.images.findIndex(
                         (img) => img.id === selectedImage.id
                       ) + 1}{" "}
@@ -805,10 +805,10 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
                   <button
                     key={image.id}
                     onClick={() => setSelectedImage(image)}
-                    className={`relative aspect-square overflow-hidden rounded-lg border-2 transition-all hover:shadow-md ${
+                    className={`relative aspect-square overflow-hidden rounded-lg border transition-all hover:shadow-lg ${
                       selectedImage?.id === image.id
-                        ? "border-[#0a3299] ring-2 ring-[#0a3299] ring-opacity-50"
-                        : "border-gray-200 hover:border-gray-300"
+                        ? "border-[#0a3299] ring-2 ring-[#0a3299] ring-opacity-30 shadow-lg"
+                        : "border-gray-200 hover:border-[#0a3299] hover:shadow-md"
                     }`}
                   >
                     <Image
@@ -818,8 +818,10 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
                       className="object-cover"
                     />
                     {image.caption && (
-                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
-                        <p className="text-xs truncate">{image.caption}</p>
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white p-3">
+                        <p className="text-xs truncate font-medium">
+                          {image.caption}
+                        </p>
                       </div>
                     )}
                   </button>
@@ -831,7 +833,7 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
 
         {/* Seção de Comentários - Movida para baixo */}
         <div>
-          <Card>
+          <Card className="border-gray-200 shadow-sm border border-gray-200">
             <CardContent className="p-6">
               <h3 className="font-semibold text-gray-900 mb-4">
                 Comentários ({galleryData.comments?.length || 0})
@@ -843,7 +845,7 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Escreva um comentário..."
-                  className="w-full"
+                  className="w-full border-[#d9d9d9] focus:border-[#0a3299] focus:outline-none"
                 />
                 <Button
                   onClick={handleComment}
@@ -879,8 +881,15 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
                                 comment.user.username}
                             </span>
                             <span className="text-xs text-gray-500">
-                              {new Date(comment.created_at).toLocaleDateString(
-                                "pt-BR"
+                              {new Date(comment.created_at).toLocaleString(
+                                "pt-BR",
+                                {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
                               )}
                             </span>
                           </div>
