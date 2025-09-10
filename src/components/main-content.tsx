@@ -5,7 +5,11 @@ import Image from "next/image";
 import { useState } from "react";
 import ContentSection from "./content-section";
 
-export default function MainContent() {
+interface MainContentProps {
+  onShowGalleries?: () => void;
+}
+
+export default function MainContent({ onShowGalleries }: MainContentProps) {
   return (
     <div className="space-y-8">
       {/* SMUL na Mídia */}
@@ -125,7 +129,10 @@ export default function MainContent() {
             <h3 className="text-white text-4xl font-bold ml-8"></h3>
           </div>
         </div>
-        <Button className="bg-[#0a3299] hover:bg-[#395aad] text-white px-6 py-2 text-sm">
+        <Button
+          className="bg-[#0a3299] hover:bg-[#395aad] text-white px-6 py-2 text-sm"
+          onClick={onShowGalleries}
+        >
           VER MAIS
         </Button>
       </section>

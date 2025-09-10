@@ -17,6 +17,7 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
+  Image as ImageIcon,
 } from "lucide-react";
 
 interface User {
@@ -77,6 +78,12 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
       href: "/admin/users",
       icon: Users,
       description: "Gerenciar usuários",
+    },
+    {
+      title: "Galerias",
+      href: "/admin/galerias",
+      icon: ImageIcon,
+      description: "Gerenciar galerias",
     },
     {
       title: "Relatórios",

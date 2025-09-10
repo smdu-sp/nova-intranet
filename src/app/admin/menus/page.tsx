@@ -76,7 +76,7 @@ export default function MenusPage() {
         setUser(data.user);
       }
     } catch (error) {
-      console.error("Erro ao obter dados do usuÃ¡rio:", error);
+      console.error("Erro ao obter dados do usuário:", error);
     }
   };
 
@@ -126,7 +126,7 @@ export default function MenusPage() {
     const location = formData.get("location") as string;
 
     if (!name.trim() || !location.trim()) {
-      showError("Erro", "Nome e localizaÃ§Ã£o sÃ£o obrigatÃ³rios");
+      showError("Erro", "Nome e localização são obrigatórios");
       return;
     }
 
@@ -142,7 +142,7 @@ export default function MenusPage() {
       const result = await response.json();
 
       if (result.success) {
-        success("Menu criado com sucesso!", "O menu foi criado e estÃ¡ ativo");
+        success("Menu criado com sucesso!", "O menu foi criado e está ativo");
         setShowCreateForm(false);
         await fetchMenus();
       } else {
@@ -157,7 +157,7 @@ export default function MenusPage() {
   const handleDeleteMenu = async (id: number) => {
     if (
       !confirm(
-        "Tem certeza que deseja deletar este menu? Todos os itens serÃ£o removidos."
+        "Tem certeza que deseja deletar este menu? Todos os itens serão removidos."
       )
     ) {
       return;
@@ -199,8 +199,8 @@ export default function MenusPage() {
 
   const getLocationLabel = (location: string) => {
     const labels: { [key: string]: string } = {
-      header: "CabeÃ§alho",
-      footer: "RodapÃ©",
+      header: "Cabeçalho",
+      footer: "Rodapé",
       sidebar: "Barra Lateral",
     };
     return labels[location] || location;
@@ -887,7 +887,7 @@ export default function MenusPage() {
   return (
     <AdminLayout
       title="Gerenciamento de Menus"
-      description="Crie e gerencie menus de navegaÃ§Ã£o para a intranet"
+      description="Crie e gerencie menus de navegação para a intranet"
     >
       <div className="flex justify-end items-center mb-8">
         <Button
@@ -909,7 +909,7 @@ export default function MenusPage() {
                 Nenhum menu criado
               </h3>
               <p className="text-gray-500 mb-4">
-                Comece criando seu primeiro menu de navegaÃ§Ã£o
+                Comece criando seu primeiro menu de navegação
               </p>
               <Button onClick={() => setShowCreateForm(true)}>
                 <Plus className="w-4 h-4 mr-2" />
@@ -918,31 +918,94 @@ export default function MenusPage() {
             </CardContent>
           </Card>
         ) : (
-          <div
-            style={{
-              backgroundColor: "lightblue",
-              padding: "20px",
-              border: "2px solid blue",
-            }}
-          >
-            <h2>MENUS ENCONTRADOS: {menus.length}</h2>
-            {menus.map((menu) => (
-              <div
-                key={menu.id}
-                style={{
-                  backgroundColor: "white",
-                  padding: "10px",
-                  margin: "10px",
-                  border: "1px solid black",
-                }}
-              >
-                <h3>Menu: {menu.name}</h3>
-                <p>ID: {menu.id}</p>
-                <p>LocalizaÃ§Ã£o: {menu.location}</p>
-                <p>Ativo: {menu.is_active ? "Sim" : "NÃ£o"}</p>
-              </div>
-            ))}
-          </div>
+          menus.map((menu) => (
+            <Card key={menu.id} className="hover:shadow-md transition-shadow">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleMenuExpansion(menu.id)}
+                      className="p-1"
+                    >
+                      {expandedMenus.has(menu.id) ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </Button>
+                    <div>
+                      <CardTitle className="text-lg">{menu.name}</CardTitle>
+                      <CardDescription>
+                        Localização: {getLocationLabel(menu.location)}
+                      </CardDescription>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full flex items-center gap-1 ${
+                        menu.is_active
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {menu.is_active ? (
+                        <Eye className="w-3 h-3" />
+                      ) : (
+                        <EyeOff className="w-3 h-3" />
+                      )}
+                      {menu.is_active ? "Ativo" : "Inativo"}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditingMenu(menu)}
+                    >
+                      <Edit className="w-4 h-4 mr-1" />
+                      Editar
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDeleteMenu(menu.id)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Deletar
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              {expandedMenus.has(menu.id) && (
+                <CardContent>
+                  <div className="border-t pt-4">
+                    <h4 className="font-medium mb-3">Itens do Menu</h4>
+                    {menuItems[menu.id] && menuItems[menu.id].length > 0 ? (
+                      <div className="space-y-2">
+                        {renderMenuItems(menuItems[menu.id], 0, menu.id)}
+                      </div>
+                    ) : (
+                      <div className="text-center py-4 text-gray-500">
+                        <LinkIcon className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                        <p>Nenhum item neste menu</p>
+                      </div>
+                    )}
+                    <div className="mt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowAddItemForm(menu.id)}
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Adicionar Item
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+          ))
         )}
       </div>
 
@@ -965,15 +1028,15 @@ export default function MenusPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    LocalizaÃ§Ã£o
+                    Localização
                   </label>
                   <select
                     name="location"
                     className="w-full p-2 border border-gray-300 rounded-md"
                     required
                   >
-                    <option value="header">CabeÃ§alho</option>
-                    <option value="footer">RodapÃ©</option>
+                    <option value="header">Cabeçalho</option>
+                    <option value="footer">Rodapé</option>
                     <option value="sidebar">Barra Lateral</option>
                   </select>
                 </div>

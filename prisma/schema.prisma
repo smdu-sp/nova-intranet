@@ -143,10 +143,13 @@ model User {
     updated_at   DateTime  @updatedAt
 
     // Relacionamentos
-    comments      Comment[]
-    likes         Like[]
-    created_posts BlogPost[] @relation("PostAuthor")
-    created_pages CMSPage[]  @relation("PageAuthor")
+    comments          Comment[]
+    likes             Like[]
+    created_posts     BlogPost[]       @relation("PostAuthor")
+    created_pages     CMSPage[]        @relation("PageAuthor")
+    galleries_created Gallery[]        @relation("GalleryAuthor")
+    gallery_comments  GalleryComment[] @relation("GalleryCommentAuthor")
+    gallery_likes     GalleryLike[]    @relation("GalleryLikeAuthor")
 
     @@index([username])
     @@index([email])
@@ -190,6 +193,84 @@ model Like {
     @@index([post_id])
     @@index([user_id])
     @@map("likes")
+}
+
+// ===== MODEL GALLERIES =====
+model Gallery {
+    id                 Int      @id @default(autoincrement())
+    title              String   @db.VarChar(255)
+    description        String?  @db.Text
+    cover_image        String   @db.VarChar(500) // Imagem de capa
+    is_published       Boolean  @default(false)
+    created_by         String   @default("admin") @db.VarChar(100)
+    created_by_user_id Int? // ID do usuário que criou a galeria
+    created_at         DateTime @default(now())
+    updated_at         DateTime @updatedAt
+
+    // Relacionamentos
+    images          GalleryImage[]
+    comments        GalleryComment[]
+    likes           GalleryLike[]
+    created_by_user User?            @relation("GalleryAuthor", fields: [created_by_user_id], references: [id])
+
+    @@index([created_by])
+    @@index([created_by_user_id])
+    @@index([is_published])
+    @@map("galleries")
+}
+
+// ===== MODEL GALLERY IMAGES =====
+model GalleryImage {
+    id             Int      @id @default(autoincrement())
+    gallery_id     Int
+    image_url      String   @db.VarChar(500)
+    alt_text       String?  @db.VarChar(255)
+    caption        String?  @db.Text
+    order_position Int      @default(0)
+    created_at     DateTime @default(now())
+    updated_at     DateTime @updatedAt
+
+    // Relacionamentos
+    gallery Gallery @relation(fields: [gallery_id], references: [id], onDelete: Cascade)
+
+    @@index([gallery_id])
+    @@index([order_position])
+    @@map("gallery_images")
+}
+
+// ===== MODEL GALLERY COMMENTS =====
+model GalleryComment {
+    id         Int      @id @default(autoincrement())
+    gallery_id Int
+    user_id    Int
+    content    String   @db.Text
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    // Relacionamentos
+    gallery Gallery @relation(fields: [gallery_id], references: [id], onDelete: Cascade)
+    user    User    @relation("GalleryCommentAuthor", fields: [user_id], references: [id])
+
+    @@index([gallery_id])
+    @@index([user_id])
+    @@map("gallery_comments")
+}
+
+// ===== MODEL GALLERY LIKES =====
+model GalleryLike {
+    id         Int      @id @default(autoincrement())
+    gallery_id Int
+    user_id    Int
+    created_at DateTime @default(now())
+
+    // Relacionamentos
+    gallery Gallery @relation(fields: [gallery_id], references: [id], onDelete: Cascade)
+    user    User    @relation("GalleryLikeAuthor", fields: [user_id], references: [id])
+
+    @@unique([gallery_id, user_id]) // Um usuário só pode dar like uma vez por galeria
+    @@index([gallery_id])
+    @@index([user_id])
+    @@map("gallery_likes")
 }
 
 // ===== ENUMS =====

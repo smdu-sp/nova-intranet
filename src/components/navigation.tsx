@@ -126,6 +126,17 @@ export default function Navigation() {
       <div className="flex justify-around">
         {/* Menu principal do banco de dados */}
         {!loading && menuItems.map(renderMenuItem)}
+
+        {/* Item fixo de Galerias */}
+        {!loading && (
+          <div className="relative group min-w-[120px] text-center">
+            <Link href="/galerias" className="block">
+              <div className="px-4 py-3 text-gray-700 hover:text-[#0a3299] hover:bg-gray-100 transition-colors duration-200 rounded-md">
+                <span className="font-medium">Galerias</span>
+              </div>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
