@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useState } from "react";
-import ContentSection from "./content-section";
 
 interface MainContentProps {
   onShowGalleries?: () => void;
@@ -49,7 +48,13 @@ export default function MainContent({ onShowGalleries }: MainContentProps) {
             Comunicação (ASCOM) para divulgar as ações em desenvolvimento na
             SMUL.
           </p>
-          <Button className="bg-[#0a3299] hover:bg-[#395aad] text-white px-6 py-2 text-sm">
+          <Button
+            className="bg-[#0a3299] hover:bg-[#395aad] text-white px-6 py-2 text-sm"
+            onClick={() =>
+              (window.location.href =
+                "https://gestaourbana.prefeitura.sp.gov.br/noticia/")
+            }
+          >
             VER MAIS
           </Button>
         </div>
@@ -80,10 +85,17 @@ export default function MainContent({ onShowGalleries }: MainContentProps) {
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-[#333333] mb-2">Entrevista do Mês</h3>
-            <p className="text-[#666666] text-sm leading-relaxed">
-              Saiba quem foi notícia no boletim mensal “Papo Urbano”, publicação
-              da SMUL feita exclusivamente para seus servidores e funcionários.
+            <p className="text-[#666666] text-sm leading-relaxed mb-4">
+              Saiba quem foi notícia no boletim mensal &ldquo;Papo
+              Urbano&rdquo;, publicação da SMUL feita exclusivamente para seus
+              servidores e funcionários.
             </p>
+            <Button
+              className="bg-[#0a3299] hover:bg-[#395aad] text-white px-6 py-2 text-sm"
+              onClick={() => window.open("/images/papo_urbanno.png", "_blank")}
+            >
+              VER MAIS
+            </Button>
           </div>
         </div>
       </section>
@@ -177,22 +189,26 @@ function ComunicadosCarousel() {
 
   const images = [
     {
-      src: "/images/banner-noticia.png",
-      alt: "Banner Notícia",
-      title: "Banner Notícia",
-      description: "Confira as últimas notícias da SMUL",
+      src: "/images/banner-pesquisa-enps.png",
+      alt: "Banner Pesquisa ENPS",
+      title: "Pesquisa ENPS",
+      description: "Participe da pesquisa de satisfação",
+      onClick: () =>
+        (window.location.href = "http://10.75.34.78:3000/?page=pesquisa-enps"),
     },
     {
       src: "/images/banner_intranet_ouvidoria.png",
       alt: "Banner Intranet Ouvidoria",
       title: "Intranet Ouvidoria",
       description: "Acesse o sistema de ouvidoria",
+      onClick: () => (window.location.href = "mailto:ogm@prefeitura.sp.gov.br"),
     },
     {
-      src: "/images/banner-pesquisa-enps.png",
-      alt: "Banner Pesquisa ENPS",
-      title: "Pesquisa ENPS",
-      description: "Participe da pesquisa de satisfação",
+      src: "/images/banner-noticia.png",
+      alt: "Banner Notícia",
+      title: "Banner Notícia",
+      description: "Confira as últimas notícias da SMUL",
+      onClick: () => (window.location.href = "http://10.75.32.170:3600/"),
     },
   ];
 
@@ -208,13 +224,19 @@ function ComunicadosCarousel() {
     <div className="relative bg-gradient-to-r from-[#0a3299] to-[#395aad] rounded-lg text-white overflow-hidden h-[330px] max-w-[880px] mx-auto">
       {/* Imagem atual */}
       <div className="relative h-full w-full">
-        <Image
-          src={images[currentImage].src}
-          alt={images[currentImage].alt}
-          width={880}
-          height={330}
-          className="w-full h-full object-contain rounded-lg"
-        />
+        <button
+          onClick={images[currentImage].onClick}
+          className="w-full h-full cursor-pointer hover:opacity-90 transition-opacity"
+          aria-label={`Clique para ${images[currentImage].description}`}
+        >
+          <Image
+            src={images[currentImage].src}
+            alt={images[currentImage].alt}
+            width={880}
+            height={330}
+            className="w-full h-full object-contain rounded-lg"
+          />
+        </button>
       </div>
 
       {/* Setas de navegação */}

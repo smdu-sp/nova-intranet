@@ -159,7 +159,7 @@ export default function Home() {
       <Header />
       <SearchBar />
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className={"grid grid-cols-1 lg:grid-cols-4 gap-6"}>
           <div className="lg:col-span-3">
             {currentPage ? (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
@@ -720,7 +720,7 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
         <div>
           {/* Imagem Principal com Navegação */}
           {selectedImage && (
-            <Card className="mb-6 border-gray-200 shadow-sm border border-gray-200">
+            <Card className="mb-6 border-gray-200 shadow-sm">
               <div className="relative aspect-[4/3] overflow-hidden group">
                 <Image
                   src={selectedImage.image_url}
@@ -735,6 +735,7 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
                     {/* Seta Esquerda */}
                     <button
                       onClick={() => {
+                        if (!galleryData.images) return;
                         const currentIndex = galleryData.images.findIndex(
                           (img) => img.id === selectedImage.id
                         );
@@ -753,6 +754,7 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
                     {/* Seta Direita */}
                     <button
                       onClick={() => {
+                        if (!galleryData.images) return;
                         const currentIndex = galleryData.images.findIndex(
                           (img) => img.id === selectedImage.id
                         );
@@ -833,7 +835,7 @@ function GalleryDetailComponent({ gallery }: { gallery: Gallery }) {
 
         {/* Seção de Comentários - Movida para baixo */}
         <div>
-          <Card className="border-gray-200 shadow-sm border border-gray-200">
+          <Card className="border-gray-200 shadow-sm">
             <CardContent className="p-6">
               <h3 className="font-semibold text-gray-900 mb-4">
                 Comentários ({galleryData.comments?.length || 0})
